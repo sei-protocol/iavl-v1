@@ -5,6 +5,7 @@ go 1.20
 require (
 	cosmossdk.io/log v1.2.0
 	github.com/confio/ics23/go v0.7.0
+	github.com/cosmos/ics23/go v0.10.0
 	github.com/emicklei/dot v1.4.2
 	github.com/golang/mock v1.6.0
 	github.com/stretchr/testify v1.8.4
@@ -56,4 +57,4 @@ retract (
 	v0.18.0
 )
 
-replace github.com/tendermint/tm-db => /Users/kartikbhat/tm-db
+replace github.com/tendermint/tm-db => github.com/sei-protocol/tm-db v0.0.5-0.20230907132939-b56cad9876eb
