@@ -182,6 +182,8 @@ func (i *Importer) Add(exportNode *ExportNode) error {
 		nonce: i.nonces[exportNode.Version] + 1,
 	}
 
+	fmt.Printf("DEBUG - Add nodeKey expected %s, actual%s\n", exportNode.Nodekey.String(), node.nodeKey.String())
+
 	i.stack = append(i.stack, node)
 
 	return nil

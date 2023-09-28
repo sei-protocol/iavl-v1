@@ -23,6 +23,7 @@ type ExportNode struct {
 	Value   []byte
 	Version int64
 	Height  int8
+	Nodekey *NodeKey
 }
 
 // Exporter exports nodes from an ImmutableTree. It is created by ImmutableTree.Export().
@@ -67,6 +68,7 @@ func (e *Exporter) export(ctx context.Context) {
 			Value:   node.value,
 			Version: node.nodeKey.version,
 			Height:  node.subtreeHeight,
+			Nodekey: node.nodeKey,
 		}
 
 		select {
