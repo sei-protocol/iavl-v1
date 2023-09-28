@@ -130,9 +130,12 @@ func (i *Importer) Add(exportNode *ExportNode) error {
 		return errors.New("node cannot be nil")
 	}
 	if exportNode.Version > i.version {
+		fmt.Printf("DEBUG - Importer Add() greater version exportNode (%d, %d)\n", exportNode.Innerkey.version, exportNode.Innerkey.nonce)
 		return fmt.Errorf("node version %v can't be greater than import version %v",
 			exportNode.Version, i.version)
 	}
+
+	fmt.Printf("DEBUG - Importer Add() exportNode (%d, %d)\n", exportNode.Innerkey.version, exportNode.Innerkey.nonce)
 
 	node := &Node{
 		key:           exportNode.Key,
@@ -182,7 +185,7 @@ func (i *Importer) Add(exportNode *ExportNode) error {
 		nonce: i.nonces[exportNode.Version] + 1,
 	}
 
-	fmt.Printf("DEBUG - Add nodeKey expected %s, actual%s\n", exportNode.Nodekey.String(), node.nodeKey.String())
+	fmt.Printf("DEBUG - Add nodeKey expected (%d, %d), actual %s\n", exportNode.Innerkey.version, exportNode.Innerkey.nonce, node.nodeKey.String())
 
 	i.stack = append(i.stack, node)
 
