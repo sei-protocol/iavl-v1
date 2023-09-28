@@ -83,16 +83,19 @@ func (t *ImmutableTree) renderNode(node *Node, indent string, depth int, encoder
 	prefix := strings.Repeat(indent, depth)
 	// handle nil
 	if node == nil {
+		fmt.Printf("DEBUG - renderNode node nil\n")
 		return []string{fmt.Sprintf("%s<nil>", prefix)}, nil
 	}
 	// handle leaf
 	if node.isLeaf() {
+		fmt.Printf("DEBUG - renderNode node leaf key %X val %X hash %X nodeKey %s leftNodeKey %X rightNodeKey %X size %d subtreeHeight %d\n", node.key, node.value, node.hash, node.nodeKey.String(), node.leftNodeKey, node.rightNodeKey, node.size, node.subtreeHeight)
 		here := fmt.Sprintf("%s%s", prefix, encoder(node.key, depth, true))
 		return []string{here}, nil
 	}
 
 	// recurse on inner node
 	here := fmt.Sprintf("%s%s", prefix, encoder(node.hash, depth, false))
+	fmt.Printf("DEBUG - renderNode non-leaf node key %X val %X hash %X nodeKey %s leftNodeKey %X rightNodeKey %X size %d subtreeHeight %d\n", node.key, node.value, node.hash, node.nodeKey.String(), node.leftNodeKey, node.rightNodeKey, node.size, node.subtreeHeight)
 
 	rightNode, err := node.getRightNode(t)
 	if err != nil {
