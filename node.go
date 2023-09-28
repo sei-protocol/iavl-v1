@@ -730,7 +730,9 @@ func (node *Node) traverse(t *ImmutableTree, ascending bool, cb func(*Node) bool
 
 // traversePost is a wrapper over traverseInRange when we want the whole tree post-order
 func (node *Node) traversePost(t *ImmutableTree, ascending bool, cb func(*Node) bool) bool {
+	fmt.Printf("DEBUG - Node traversePost() first Node Key %s\n", node.nodeKey.String())
 	return node.traverseInRange(t, nil, nil, ascending, false, true, func(node *Node) bool {
+		fmt.Printf("DEBUG - Node traversePost() Node Key %s\n", node.nodeKey.String())
 		return cb(node)
 	})
 }
@@ -738,8 +740,10 @@ func (node *Node) traversePost(t *ImmutableTree, ascending bool, cb func(*Node) 
 func (node *Node) traverseInRange(tree *ImmutableTree, start, end []byte, ascending bool, inclusive bool, post bool, cb func(*Node) bool) bool {
 	stop := false
 	t := node.newTraversal(tree, start, end, ascending, inclusive, post)
+	fmt.Printf("DEBUG - Node traverseInRange() traverseInRange first Node Key %s\n", node.nodeKey.String())
 	// TODO: figure out how to handle these errors
 	for node2, err := t.next(); node2 != nil && err == nil; node2, err = t.next() {
+		fmt.Printf("DEBUG - Node traverseInRange() traverseInRange Node Key %s\n", node2.nodeKey.String())
 		stop = cb(node2)
 		if stop {
 			return stop
