@@ -266,6 +266,9 @@ func MakeLegacyNode(hash, buf []byte) (*Node, error) {
 
 // String returns a string representation of the node key.
 func (nk *NodeKey) String() string {
+	if nk == nil {
+		return "nil"
+	}
 	return fmt.Sprintf("(%d, %d)", nk.version, nk.nonce)
 }
 
