@@ -27,23 +27,23 @@ const (
 
 // NodeKey represents a key of node in the DB.
 type NodeKey struct {
-	version int64
-	nonce   uint32
+	Version int64
+	Nonce   uint32
 }
 
 // GetKey returns a byte slice of the NodeKey.
 func (nk *NodeKey) GetKey() []byte {
 	b := make([]byte, 12)
-	binary.BigEndian.PutUint64(b, uint64(nk.version))
-	binary.BigEndian.PutUint32(b[8:], nk.nonce)
+	binary.BigEndian.PutUint64(b, uint64(nk.Version))
+	binary.BigEndian.PutUint32(b[8:], nk.Nonce)
 	return b
 }
 
 // GetNodeKey returns a NodeKey from a byte slice.
 func GetNodeKey(key []byte) *NodeKey {
 	return &NodeKey{
-		version: int64(binary.BigEndian.Uint64(key)),
-		nonce:   binary.BigEndian.Uint32(key[8:]),
+		Version: int64(binary.BigEndian.Uint64(key)),
+		Nonce:   binary.BigEndian.Uint32(key[8:]),
 	}
 }
 
@@ -126,7 +126,7 @@ func MakeNode(nk, buf []byte) (*Node, error) {
 		}
 		node.value = val
 		// ensure take the hash for the leaf node
-		if _, err := node._hash(node.nodeKey.version); err != nil {
+		if _, err := node._hash(node.nodeKey.Version); err != nil {
 			return nil, fmt.Errorf("calculating hash error: %v", err)
 		}
 	} else { // Read children.
@@ -156,19 +156,19 @@ func MakeNode(nk, buf []byte) (*Node, error) {
 				leftNodeKey NodeKey
 				nonce       int64
 			)
-			leftNodeKey.version, n, err = encoding.DecodeVarint(buf)
+			leftNodeKey.Version, n, err = encoding.DecodeVarint(buf)
 			if err != nil {
-				return nil, fmt.Errorf("decoding node.leftNodeKey.version, %w", err)
+				return nil, fmt.Errorf("decoding node.leftnodeKey.Version, %w", err)
 			}
 			buf = buf[n:]
 			nonce, n, err = encoding.DecodeVarint(buf)
 			if err != nil {
-				return nil, fmt.Errorf("decoding node.leftNodeKey.nonce, %w", err)
+				return nil, fmt.Errorf("decoding node.leftnodeKey.Nonce, %w", err)
 			}
 			buf = buf[n:]
-			leftNodeKey.nonce = uint32(nonce)
-			if nonce != int64(leftNodeKey.nonce) {
-				return nil, errors.New("invalid leftNodeKey.nonce, out of int32 range")
+			leftNodeKey.Nonce = uint32(nonce)
+			if nonce != int64(leftNodeKey.Nonce) {
+				return nil, errors.New("invalid leftnodeKey.Nonce, out of int32 range")
 			}
 			node.leftNodeKey = leftNodeKey.GetKey()
 		}
@@ -182,18 +182,18 @@ func MakeNode(nk, buf []byte) (*Node, error) {
 				rightNodeKey NodeKey
 				nonce        int64
 			)
-			rightNodeKey.version, n, err = encoding.DecodeVarint(buf)
+			rightNodeKey.Version, n, err = encoding.DecodeVarint(buf)
 			if err != nil {
-				return nil, fmt.Errorf("decoding node.rightNodeKey.version, %w", err)
+				return nil, fmt.Errorf("decoding node.rightnodeKey.Version, %w", err)
 			}
 			buf = buf[n:]
 			nonce, _, err = encoding.DecodeVarint(buf)
 			if err != nil {
-				return nil, fmt.Errorf("decoding node.rightNodeKey.nonce, %w", err)
+				return nil, fmt.Errorf("decoding node.rightnodeKey.Nonce, %w", err)
 			}
-			rightNodeKey.nonce = uint32(nonce)
-			if nonce != int64(rightNodeKey.nonce) {
-				return nil, errors.New("invalid rightNodeKey.nonce, out of int32 range")
+			rightNodeKey.Nonce = uint32(nonce)
+			if nonce != int64(rightNodeKey.Nonce) {
+				return nil, errors.New("invalid rightnodeKey.Nonce, out of int32 range")
 			}
 			node.rightNodeKey = rightNodeKey.GetKey()
 		}
@@ -234,7 +234,7 @@ func MakeLegacyNode(hash, buf []byte) (*Node, error) {
 	node := &Node{
 		subtreeHeight: int8(height),
 		size:          size,
-		nodeKey:       &NodeKey{version: ver},
+		nodeKey:       &NodeKey{Version: ver},
 		key:           key,
 		hash:          hash,
 	}
@@ -269,7 +269,7 @@ func (nk *NodeKey) String() string {
 	if nk == nil {
 		return "nil"
 	}
-	return fmt.Sprintf("(%d, %d)", nk.version, nk.nonce)
+	return fmt.Sprintf("(%d, %d)", nk.Version, nk.Nonce)
 }
 
 // String returns a string representation of the node.
@@ -471,7 +471,7 @@ func (node *Node) validate() error {
 	if node.nodeKey == nil {
 		return errors.New("nodeKey cannot be nil")
 	}
-	if node.nodeKey.version <= 0 {
+	if node.nodeKey.Version <= 0 {
 		return errors.New("version must be greater than 0")
 	}
 	if node.subtreeHeight < 0 {
@@ -572,13 +572,13 @@ func (node *Node) encodedSize() int {
 		n += encoding.EncodeBytesSize(node.hash)
 		if node.leftNodeKey != nil {
 			nk := GetNodeKey(node.leftNodeKey)
-			n += encoding.EncodeVarintSize(nk.version) +
-				encoding.EncodeVarintSize(int64(nk.nonce))
+			n += encoding.EncodeVarintSize(nk.Version) +
+				encoding.EncodeVarintSize(int64(nk.Nonce))
 		}
 		if node.rightNodeKey != nil {
 			nk := GetNodeKey(node.rightNodeKey)
-			n += encoding.EncodeVarintSize(nk.version) +
-				encoding.EncodeVarintSize(int64(nk.nonce))
+			n += encoding.EncodeVarintSize(nk.Version) +
+				encoding.EncodeVarintSize(int64(nk.Nonce))
 		}
 	}
 	return n
@@ -636,11 +636,11 @@ func (node *Node) writeBytes(w io.Writer) error {
 			}
 		} else {
 			leftNodeKey := GetNodeKey(node.leftNodeKey)
-			err = encoding.EncodeVarint(w, leftNodeKey.version)
+			err = encoding.EncodeVarint(w, leftNodeKey.Version)
 			if err != nil {
 				return fmt.Errorf("writing the version of left node key, %w", err)
 			}
-			err = encoding.EncodeVarint(w, int64(leftNodeKey.nonce))
+			err = encoding.EncodeVarint(w, int64(leftNodeKey.Nonce))
 			if err != nil {
 				return fmt.Errorf("writing the nonce of left node key, %w", err)
 			}
@@ -655,11 +655,11 @@ func (node *Node) writeBytes(w io.Writer) error {
 			}
 		} else {
 			rightNodeKey := GetNodeKey(node.rightNodeKey)
-			err = encoding.EncodeVarint(w, rightNodeKey.version)
+			err = encoding.EncodeVarint(w, rightNodeKey.Version)
 			if err != nil {
 				return fmt.Errorf("writing the version of right node key, %w", err)
 			}
-			err = encoding.EncodeVarint(w, int64(rightNodeKey.nonce))
+			err = encoding.EncodeVarint(w, int64(rightNodeKey.Nonce))
 			if err != nil {
 				return fmt.Errorf("writing the nonce of right node key, %w", err)
 			}

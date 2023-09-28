@@ -219,7 +219,7 @@ func (ndb *nodeDB) SaveNode(node *Node) error {
 	}
 
 	// resetBatch only working on generate a genesis block
-	if node.nodeKey.version <= genesisVersion {
+	if node.nodeKey.Version <= genesisVersion {
 		if err := ndb.resetBatch(); err != nil {
 			return err
 		}
@@ -389,7 +389,7 @@ func (ndb *nodeDB) DeleteVersion(version int64) error {
 	if err != nil {
 		return err
 	}
-	if rootKey == nil || GetNodeKey(rootKey).version < version {
+	if rootKey == nil || GetNodeKey(rootKey).Version < version {
 		if err := ndb.batch.Delete(ndb.nodeKey(GetRootKey(version))); err != nil {
 			return err
 		}
@@ -407,7 +407,7 @@ func (ndb *nodeDB) deleteLegacyNodes(version int64, nk []byte) error {
 	if err != nil {
 		return err
 	}
-	if node.nodeKey.version < version {
+	if node.nodeKey.Version < version {
 		// it will skip the whole subtree.
 		return nil
 	}
@@ -712,7 +712,7 @@ func (ndb *nodeDB) getLatestVersion() (int64, error) {
 		k := itr.Key()
 		var nk []byte
 		nodeKeyFormat.Scan(k, &nk)
-		ndb.latestVersion = GetNodeKey(nk).version
+		ndb.latestVersion = GetNodeKey(nk).Version
 		return ndb.latestVersion, nil
 	}
 
@@ -917,7 +917,7 @@ func (ndb *nodeDB) traverseOrphans(prevVersion, curVersion int64, fn func(*Node)
 	for prevIter.Valid() {
 		for orgNode == nil && curIter.Valid() {
 			node := curIter.GetNode()
-			if node.nodeKey.version <= prevVersion {
+			if node.nodeKey.Version <= prevVersion {
 				curIter.Next(true)
 				orgNode = node
 			} else {

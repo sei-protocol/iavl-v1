@@ -66,7 +66,7 @@ func (ndb *nodeDB) extractStateChanges(prevVersion int64, prevRoot, root []byte,
 		sharedNode = nil
 		for curIter.Valid() {
 			node := curIter.GetNode()
-			shared := node.nodeKey.version <= prevVersion
+			shared := node.nodeKey.Version <= prevVersion
 			curIter.Next(shared)
 			if shared {
 				sharedNode = node

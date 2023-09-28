@@ -71,12 +71,12 @@ func (e *Exporter) export(ctx context.Context) {
 		exportNode := &ExportNode{
 			Key:      node.key,
 			Value:    node.value,
-			Version:  node.nodeKey.version,
+			Version:  node.nodeKey.Version,
 			Height:   node.subtreeHeight,
 			Innerkey: innerNodeKey,
 		}
 
-		fmt.Printf("DEBUG - Add Exporter export() exportNode (%d, %d)\n", innerNodeKey.version, innerNodeKey.nonce)
+		fmt.Printf("DEBUG - Add Exporter export() exportNode (%d, %d)\n", innerNodeKey.Version, innerNodeKey.Nonce)
 
 		select {
 		case e.ch <- exportNode:

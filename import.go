@@ -59,7 +59,7 @@ func newImporter(tree *MutableTree, version int64) (*Importer, error) {
 
 // writeNode writes the node content to the storage.
 func (i *Importer) writeNode(node *Node) error {
-	if _, err := node._hash(node.nodeKey.version); err != nil {
+	if _, err := node._hash(node.nodeKey.Version); err != nil {
 		return err
 	}
 	if err := node.validate(); err != nil {
@@ -130,12 +130,12 @@ func (i *Importer) Add(exportNode *ExportNode) error {
 		return errors.New("node cannot be nil")
 	}
 	if exportNode.Version > i.version {
-		fmt.Printf("DEBUG - Importer Add() greater version exportNode (%d, %d)\n", exportNode.Innerkey.version, exportNode.Innerkey.nonce)
+		fmt.Printf("DEBUG - Importer Add() greater version exportNode (%d, %d)\n", exportNode.Innerkey.Version, exportNode.Innerkey.Nonce)
 		return fmt.Errorf("node version %v can't be greater than import version %v",
 			exportNode.Version, i.version)
 	}
 
-	fmt.Printf("DEBUG - Importer Add() exportNode (%d, %d)\n", exportNode.Innerkey.version, exportNode.Innerkey.nonce)
+	fmt.Printf("DEBUG - Importer Add() exportNode (%d, %d)\n", exportNode.Innerkey.Version, exportNode.Innerkey.Nonce)
 
 	node := &Node{
 		key:           exportNode.Key,
@@ -180,12 +180,12 @@ func (i *Importer) Add(exportNode *ExportNode) error {
 	}
 	i.nonces[exportNode.Version]++
 	node.nodeKey = &NodeKey{
-		version: exportNode.Version,
+		Version: exportNode.Version,
 		// Nonce is 1-indexed, but start at 2 since the root node having a nonce of 1.
-		nonce: i.nonces[exportNode.Version] + 1,
+		Nonce: i.nonces[exportNode.Version] + 1,
 	}
 
-	fmt.Printf("DEBUG - Add nodeKey expected (%d, %d), actual %s\n", exportNode.Innerkey.version, exportNode.Innerkey.nonce, node.nodeKey.String())
+	fmt.Printf("DEBUG - Add nodeKey expected (%d, %d), actual %s\n", exportNode.Innerkey.Version, exportNode.Innerkey.Nonce, node.nodeKey.String())
 
 	i.stack = append(i.stack, node)
 
@@ -206,12 +206,12 @@ func (i *Importer) Commit() error {
 			return err
 		}
 	case 1:
-		i.stack[0].nodeKey.nonce = 1
+		i.stack[0].nodeKey.Nonce = 1
 		if err := i.writeNode(i.stack[0]); err != nil {
 			return err
 		}
-		if i.stack[0].nodeKey.version < i.version { // it means there is no update in the given version
-			if err := i.batch.Set(i.tree.ndb.nodeKey(GetRootKey(i.version)), i.tree.ndb.nodeKeyPrefix(i.stack[0].nodeKey.version)); err != nil {
+		if i.stack[0].nodeKey.Version < i.version { // it means there is no update in the given version
+			if err := i.batch.Set(i.tree.ndb.nodeKey(GetRootKey(i.version)), i.tree.ndb.nodeKeyPrefix(i.stack[0].nodeKey.Version)); err != nil {
 				return err
 			}
 		}

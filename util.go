@@ -30,7 +30,7 @@ func printNode(ndb *nodeDB, node *Node, indent int) error {
 		printNode(ndb, rightNode, indent+1) //nolint:errcheck
 	}
 
-	hash, err := node._hash(node.nodeKey.version)
+	hash, err := node._hash(node.nodeKey.Version)
 	if err != nil {
 		return err
 	}

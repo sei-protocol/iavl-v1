@@ -286,7 +286,7 @@ func (t *ImmutableTree) IterateRangeInclusive(start, end []byte, ascending bool,
 	}
 	return t.root.traverseInRange(t, start, end, ascending, true, false, func(node *Node) bool {
 		if node.subtreeHeight == 0 {
-			return fn(node.key, node.value, node.nodeKey.version)
+			return fn(node.key, node.value, node.nodeKey.Version)
 		}
 		return false
 	})

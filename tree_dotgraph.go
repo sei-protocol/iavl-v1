@@ -131,9 +131,9 @@ func WriteDotGraphv2(w io.Writer, tree *ImmutableTree) {
 	traverse = func(node *Node, parent *dot.Node, direction string) {
 		var label string
 		if node.isLeaf() {
-			label = fmt.Sprintf("%v:%v\nv%v", node.key, node.value, node.nodeKey.version)
+			label = fmt.Sprintf("%v:%v\nv%v", node.key, node.value, node.nodeKey.Version)
 		} else {
-			label = fmt.Sprintf("%v:%v\nv%v", node.subtreeHeight, node.key, node.nodeKey.version)
+			label = fmt.Sprintf("%v:%v\nv%v", node.subtreeHeight, node.key, node.nodeKey.Version)
 		}
 
 		n := graph.Node(label)

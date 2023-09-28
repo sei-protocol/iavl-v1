@@ -185,7 +185,7 @@ func (node *Node) pathToLeaf(t *ImmutableTree, key []byte, version int64, path *
 
 	nodeVersion := version
 	if node.nodeKey != nil {
-		nodeVersion = node.nodeKey.version
+		nodeVersion = node.nodeKey.Version
 	}
 	// Note that we do not store the left child in the ProofInnerNode when we're going to add the
 	// left node as part of the path, similarly we don't store the right child info when going down
