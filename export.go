@@ -72,6 +72,8 @@ func (e *Exporter) export(ctx context.Context) {
 			Nodekey: node.nodeKey,
 		}
 
+		fmt.Printf("DEBUG - Add Exporter export() exportNode %s", exportNode.Nodekey.String())
+
 		select {
 		case e.ch <- exportNode:
 			return false
