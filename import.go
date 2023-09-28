@@ -178,14 +178,18 @@ func (i *Importer) Add(exportNode *ExportNode) error {
 		rightNode.leftNode = nil
 		rightNode.rightNode = nil
 	}
-	i.nonces[exportNode.Version]++
-	node.nodeKey = &NodeKey{
-		Version: exportNode.Version,
-		// Nonce is 1-indexed, but start at 2 since the root node having a nonce of 1.
-		Nonce: i.nonces[exportNode.Version] + 1,
-	}
+	// i.nonces[exportNode.Version]++
+	// node.nodeKey = &NodeKey{
+	// 	Version: exportNode.Version,
+	// 	// Nonce is 1-indexed, but start at 2 since the root node having a nonce of 1.
+	// 	Nonce: i.nonces[exportNode.Version] + 1,
+	// }
 
-	fmt.Printf("DEBUG - Add nodeKey expected (%d, %d), actual %s\n", exportNode.Innerkey.Version, exportNode.Innerkey.Nonce, node.nodeKey.String())
+	// fmt.Printf("DEBUG - Add nodeKey expected (%d, %d), actual %s\n", exportNode.Innerkey.Version, exportNode.Innerkey.Nonce, node.nodeKey.String())
+	node.nodeKey = &NodeKey{
+		Version: exportNode.Innerkey.Version,
+		Nonce:   exportNode.Innerkey.Nonce,
+	}
 
 	i.stack = append(i.stack, node)
 
