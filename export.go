@@ -19,11 +19,10 @@ var ErrNotInitalizedTree = errors.New("iavl/export newExporter failed to create"
 
 // ExportNode contains exported node data.
 type ExportNode struct {
-	Key      []byte
-	Value    []byte
-	Version  int64
-	Height   int8
-	Innerkey NodeKey
+	Key     []byte
+	Value   []byte
+	Version int64
+	Height  int8
 }
 
 // Exporter exports nodes from an ImmutableTree. It is created by ImmutableTree.Export().
@@ -64,19 +63,12 @@ func newExporter(tree *ImmutableTree) (*Exporter, error) {
 func (e *Exporter) export(ctx context.Context) {
 	e.tree.root.traversePost(e.tree, true, func(node *Node) bool {
 		// fmt.Printf("DEBUG - Exporter export() Node Key %s\n", node.nodeKey.String())
-		innerNodeKey := NodeKey{}
-		if node.nodeKey != nil {
-			innerNodeKey = *(node.nodeKey)
-		}
 		exportNode := &ExportNode{
-			Key:      node.key,
-			Value:    node.value,
-			Version:  node.nodeKey.Version,
-			Height:   node.subtreeHeight,
-			Innerkey: innerNodeKey,
+			Key:     node.key,
+			Value:   node.value,
+			Version: node.nodeKey.Version,
+			Height:  node.subtreeHeight,
 		}
-
-		fmt.Printf("DEBUG - Add Exporter export() exportNode (%d, %d)\n", innerNodeKey.Version, innerNodeKey.Nonce)
 
 		select {
 		case e.ch <- exportNode:

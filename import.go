@@ -130,12 +130,9 @@ func (i *Importer) Add(exportNode *ExportNode) error {
 		return errors.New("node cannot be nil")
 	}
 	if exportNode.Version > i.version {
-		fmt.Printf("DEBUG - Importer Add() greater version exportNode (%d, %d)\n", exportNode.Innerkey.Version, exportNode.Innerkey.Nonce)
 		return fmt.Errorf("node version %v can't be greater than import version %v",
 			exportNode.Version, i.version)
 	}
-
-	fmt.Printf("DEBUG - Importer Add() exportNode (%d, %d)\n", exportNode.Innerkey.Version, exportNode.Innerkey.Nonce)
 
 	node := &Node{
 		key:           exportNode.Key,
@@ -178,17 +175,11 @@ func (i *Importer) Add(exportNode *ExportNode) error {
 		rightNode.leftNode = nil
 		rightNode.rightNode = nil
 	}
-	// i.nonces[exportNode.Version]++
-	// node.nodeKey = &NodeKey{
-	// 	Version: exportNode.Version,
-	// 	// Nonce is 1-indexed, but start at 2 since the root node having a nonce of 1.
-	// 	Nonce: i.nonces[exportNode.Version] + 1,
-	// }
-
-	// fmt.Printf("DEBUG - Add nodeKey expected (%d, %d), actual %s\n", exportNode.Innerkey.Version, exportNode.Innerkey.Nonce, node.nodeKey.String())
+	i.nonces[exportNode.Version]++
 	node.nodeKey = &NodeKey{
-		Version: exportNode.Innerkey.Version,
-		Nonce:   exportNode.Innerkey.Nonce,
+		Version: exportNode.Version,
+		// Nonce is 1-indexed, but start at 2 since the root node having a nonce of 1.
+		Nonce: i.nonces[exportNode.Version] + 1,
 	}
 
 	i.stack = append(i.stack, node)
