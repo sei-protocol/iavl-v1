@@ -560,7 +560,7 @@ func (node *Node) writeHashBytesRecursively(w io.Writer, version int64) error {
 	if err != nil {
 		return err
 	}
-	_, err = node.leftNode.hashWithCount(version)
+	_, err = node.rightNode.hashWithCount(version)
 	if err != nil {
 		return err
 	}
