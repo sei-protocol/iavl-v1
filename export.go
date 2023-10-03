@@ -63,7 +63,7 @@ func newExporter(tree *ImmutableTree) (*Exporter, error) {
 // export exports nodes
 func (e *Exporter) export(ctx context.Context) {
 	e.tree.root.traversePost(e.tree, true, func(node *Node) bool {
-		fmt.Printf("DEBUG - Exporter export() Node Key %s\n", node.nodeKey.String())
+		// fmt.Printf("DEBUG - Exporter export() Node Key %s\n", node.nodeKey.String())
 		innerNodeKey := NodeKey{}
 		if node.nodeKey != nil {
 			innerNodeKey = *(node.nodeKey)

@@ -6,7 +6,6 @@ package iavl
 import (
 	"bytes"
 	"errors"
-	"fmt"
 
 	dbm "github.com/tendermint/tm-db"
 )
@@ -103,7 +102,7 @@ func (t *traversal) next() (*Node, error) {
 		return node, nil
 	}
 
-	fmt.Printf("DEBUG - traversal next() Node Key %s\n", node.nodeKey.String())
+	// fmt.Printf("DEBUG - traversal next() Node Key %s\n", node.nodeKey.String())
 
 	afterStart := t.start == nil || bytes.Compare(t.start, node.key) < 0
 	startOrAfter := afterStart || bytes.Equal(t.start, node.key)
