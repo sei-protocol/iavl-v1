@@ -430,8 +430,6 @@ func (node *Node) _hash(version int64) ([]byte, error) {
 	}
 	node.hash = h.Sum(nil)
 
-	fmt.Printf("_hash: VERSION %v full hash %X\n", version, node.hash)
-
 	return node.hash, nil
 }
 
@@ -532,10 +530,8 @@ func (node *Node) writeHashBytes(w io.Writer, version int64) error {
 		if err != nil {
 			return fmt.Errorf("writing value, %w", err)
 		}
-		fmt.Printf("writeHashBytes leaf: version: %v, subtreeHeight: %v, size: %v, node key %X, value hash %X\n", version, node.subtreeHeight, node.size, node.key, valueHash)
 	} else {
 		if node.leftNode == nil || node.rightNode == nil {
-			fmt.Printf("writeHashBytes non-leaf: version: %v, subtreeHeight: %v, size: %v NIL CHILDREN \n", version, node.subtreeHeight, node.size)
 			return ErrEmptyChild
 		}
 		err = encoding.EncodeBytes(w, node.leftNode.hash)
@@ -546,7 +542,6 @@ func (node *Node) writeHashBytes(w io.Writer, version int64) error {
 		if err != nil {
 			return fmt.Errorf("writing right hash, %w", err)
 		}
-		fmt.Printf("writeHashBytes non-leaf: version: %v, subtreeHeight: %v, size: %v node left hash %X, node right hash %X\n", version, node.subtreeHeight, node.size, node.leftNode.hash, node.rightNode.hash)
 	}
 
 	return nil
